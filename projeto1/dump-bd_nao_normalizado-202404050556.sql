@@ -2,7 +2,7 @@
 -- PostgreSQL database cluster dump
 --
 
--- Started on 2024-04-05 09:10:17 UTC
+-- Started on 2024-04-06 01:29:11 UTC
 
 SET default_transaction_read_only = off;
 
@@ -44,7 +44,7 @@ ALTER ROLE docker WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION B
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-04-05 09:10:17 UTC
+-- Started on 2024-04-06 01:29:11 UTC
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -57,7 +57,7 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
--- Completed on 2024-04-05 09:10:18 UTC
+-- Completed on 2024-04-06 01:29:11 UTC
 
 --
 -- PostgreSQL database dump complete
@@ -74,7 +74,7 @@ SET row_security = off;
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-04-05 09:10:18 UTC
+-- Started on 2024-04-06 01:29:11 UTC
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -88,7 +88,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 3410 (class 1262 OID 16389)
+-- TOC entry 3399 (class 1262 OID 16389)
 -- Name: bd_nao_normalizado; Type: DATABASE; Schema: -; Owner: docker
 --
 
@@ -130,7 +130,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 218 (class 1259 OID 16398)
+-- TOC entry 216 (class 1259 OID 16398)
 -- Name: aventureiros; Type: TABLE; Schema: public; Owner: docker
 --
 
@@ -138,11 +138,12 @@ CREATE TABLE public.aventureiros (
     id integer DEFAULT nextval('public.seq_aventureiros'::regclass) NOT NULL,
     aventureiro character varying(200) NOT NULL,
     inventario text,
-    classe_id integer NOT NULL,
     classe character varying(50) NOT NULL,
     habilidades text,
-    vida integer NOT NULL,
-    mana integer NOT NULL,
+    vida_max integer NOT NULL,
+    vida_atual integer NOT NULL,
+    mana_max integer NOT NULL,
+    mana_atual integer NOT NULL,
     dano integer NOT NULL,
     nivel integer NOT NULL
 );
@@ -151,68 +152,22 @@ CREATE TABLE public.aventureiros (
 ALTER TABLE public.aventureiros OWNER TO docker;
 
 --
--- TOC entry 216 (class 1259 OID 16391)
--- Name: seq_classes; Type: SEQUENCE; Schema: public; Owner: docker
---
-
-CREATE SEQUENCE public.seq_classes
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.seq_classes OWNER TO docker;
-
---
--- TOC entry 217 (class 1259 OID 16392)
--- Name: classes; Type: TABLE; Schema: public; Owner: docker
---
-
-CREATE TABLE public.classes (
-    id integer DEFAULT nextval('public.seq_classes'::regclass) NOT NULL,
-    classe character varying(50) NOT NULL
-);
-
-
-ALTER TABLE public.classes OWNER TO docker;
-
---
--- TOC entry 3404 (class 0 OID 16398)
--- Dependencies: 218
+-- TOC entry 3393 (class 0 OID 16398)
+-- Dependencies: 216
 -- Data for Name: aventureiros; Type: TABLE DATA; Schema: public; Owner: docker
 --
 
-COPY public.aventureiros (id, aventureiro, inventario, classe_id, classe, habilidades, vida, mana, dano, nivel) FROM stdin;
-1	Frieren	1 cajado, 1 maleta	1	Mago	Míssil mágico, Barreira mágica, Voar, Ocultação de mana	100	100	13	1
-2	Fern	1 cajado	1	Mago	Míssil mágico, Barreira mágica, Voar, Ocultação de mana	100	100	13	1
-3	Gandalf	1 cajado, 1 espada	1	Mago	Afastar espíritos, Invocação	100	100	13	1
-4	Bilbo Bolseiro	1 espada, 1 anel	8	Ladrão	Invisibilidade, Barganha	50	0	5	1
-5	Legolas	1 Arco e flecha	5	Arqueiro	Multi-disparo	75	0	20	1
+COPY public.aventureiros (id, aventureiro, inventario, classe, habilidades, vida_max, vida_atual, mana_max, mana_atual, dano, nivel) FROM stdin;
+1	Frieren	1 cajado, 1 maleta	Mago	Míssil mágico, Barreira mágica, Voar, Ocultação de mana	100	100	100	100	13	1
+2	Fern	1 cajado	Mago	Míssil mágico, Barreira mágica, Voar, Ocultação de mana	100	100	100	100	13	1
+3	Gandalf	1 cajado, 1 espada	Mago	Afastar espíritos, Invocação	100	100	100	100	13	1
+4	Bilbo Bolseiro	1 espada, 1 anel	Ladrão	Invisibilidade, Barganha	50	50	0	0	5	1
+5	Legolas	1 Arco e flecha	Arqueiro	Multi-disparo	75	75	0	0	20	1
 \.
 
 
 --
--- TOC entry 3403 (class 0 OID 16392)
--- Dependencies: 217
--- Data for Name: classes; Type: TABLE DATA; Schema: public; Owner: docker
---
-
-COPY public.classes (id, classe) FROM stdin;
-1	Mago
-2	Paladino
-3	Bárbaro
-4	Lanceiro
-5	Arqueiro
-6	Espadachim
-7	Clérigo
-8	Ladrão
-\.
-
-
---
--- TOC entry 3411 (class 0 OID 0)
+-- TOC entry 3400 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: seq_aventureiros; Type: SEQUENCE SET; Schema: public; Owner: docker
 --
@@ -221,16 +176,7 @@ SELECT pg_catalog.setval('public.seq_aventureiros', 5, true);
 
 
 --
--- TOC entry 3412 (class 0 OID 0)
--- Dependencies: 216
--- Name: seq_classes; Type: SEQUENCE SET; Schema: public; Owner: docker
---
-
-SELECT pg_catalog.setval('public.seq_classes', 8, true);
-
-
---
--- TOC entry 3256 (class 2606 OID 16405)
+-- TOC entry 3248 (class 2606 OID 16405)
 -- Name: aventureiros aventureiros_pk; Type: CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -238,25 +184,7 @@ ALTER TABLE ONLY public.aventureiros
     ADD CONSTRAINT aventureiros_pk PRIMARY KEY (id);
 
 
---
--- TOC entry 3254 (class 2606 OID 16397)
--- Name: classes classes_pk; Type: CONSTRAINT; Schema: public; Owner: docker
---
-
-ALTER TABLE ONLY public.classes
-    ADD CONSTRAINT classes_pk PRIMARY KEY (id);
-
-
---
--- TOC entry 3257 (class 2606 OID 16406)
--- Name: aventureiros aventureiros_classes_fk; Type: FK CONSTRAINT; Schema: public; Owner: docker
---
-
-ALTER TABLE ONLY public.aventureiros
-    ADD CONSTRAINT aventureiros_classes_fk FOREIGN KEY (classe_id) REFERENCES public.classes(id);
-
-
--- Completed on 2024-04-05 09:10:18 UTC
+-- Completed on 2024-04-06 01:29:11 UTC
 
 --
 -- PostgreSQL database dump complete
@@ -273,7 +201,7 @@ ALTER TABLE ONLY public.aventureiros
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-04-05 09:10:18 UTC
+-- Started on 2024-04-06 01:29:11 UTC
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -287,7 +215,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 3440 (class 1262 OID 16411)
+-- TOC entry 3431 (class 1262 OID 16411)
 -- Name: db_1a_forma_normal; Type: DATABASE; Schema: -; Owner: docker
 --
 
@@ -310,7 +238,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 220 (class 1259 OID 16430)
+-- TOC entry 219 (class 1259 OID 16430)
 -- Name: seq_aventureiros; Type: SEQUENCE; Schema: public; Owner: docker
 --
 
@@ -329,51 +257,24 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 221 (class 1259 OID 16431)
+-- TOC entry 220 (class 1259 OID 16431)
 -- Name: aventureiros; Type: TABLE; Schema: public; Owner: docker
 --
 
 CREATE TABLE public.aventureiros (
     id integer DEFAULT nextval('public.seq_aventureiros'::regclass) NOT NULL,
     aventureiro character varying(200) NOT NULL,
-    classe_id integer NOT NULL,
     classe character varying(50) NOT NULL,
-    vida integer NOT NULL,
-    mana integer NOT NULL,
+    vida_max integer NOT NULL,
+    vida_atual integer NOT NULL,
+    mana_max integer NOT NULL,
+    mana_atual integer NOT NULL,
     dano integer NOT NULL,
     nivel integer NOT NULL
 );
 
 
 ALTER TABLE public.aventureiros OWNER TO docker;
-
---
--- TOC entry 218 (class 1259 OID 16423)
--- Name: seq_classes; Type: SEQUENCE; Schema: public; Owner: docker
---
-
-CREATE SEQUENCE public.seq_classes
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.seq_classes OWNER TO docker;
-
---
--- TOC entry 219 (class 1259 OID 16424)
--- Name: classes; Type: TABLE; Schema: public; Owner: docker
---
-
-CREATE TABLE public.classes (
-    id integer DEFAULT nextval('public.seq_classes'::regclass) NOT NULL,
-    classe character varying(50) NOT NULL
-);
-
-
-ALTER TABLE public.classes OWNER TO docker;
 
 --
 -- TOC entry 217 (class 1259 OID 16419)
@@ -391,7 +292,7 @@ CREATE SEQUENCE public.seq_habilidades
 ALTER SEQUENCE public.seq_habilidades OWNER TO docker;
 
 --
--- TOC entry 223 (class 1259 OID 16457)
+-- TOC entry 222 (class 1259 OID 16457)
 -- Name: habilidades; Type: TABLE; Schema: public; Owner: docker
 --
 
@@ -405,7 +306,7 @@ CREATE TABLE public.habilidades (
 ALTER TABLE public.habilidades OWNER TO docker;
 
 --
--- TOC entry 222 (class 1259 OID 16442)
+-- TOC entry 221 (class 1259 OID 16442)
 -- Name: inventarios; Type: TABLE; Schema: public; Owner: docker
 --
 
@@ -448,49 +349,42 @@ CREATE TABLE public.itens (
 ALTER TABLE public.itens OWNER TO docker;
 
 --
--- TOC entry 3432 (class 0 OID 16431)
--- Dependencies: 221
+-- TOC entry 218 (class 1259 OID 16423)
+-- Name: seq_classes; Type: SEQUENCE; Schema: public; Owner: docker
+--
+
+CREATE SEQUENCE public.seq_classes
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.seq_classes OWNER TO docker;
+
+--
+-- TOC entry 3423 (class 0 OID 16431)
+-- Dependencies: 220
 -- Data for Name: aventureiros; Type: TABLE DATA; Schema: public; Owner: docker
 --
 
-COPY public.aventureiros (id, aventureiro, classe_id, classe, vida, mana, dano, nivel) FROM stdin;
-1	Frieren	1	Mago	100	100	13	1
-2	Fern	1	Mago	100	100	13	1
-3	Gandalf	1	Mago	100	100	13	1
-4	Bilbo Bolseiro	8	Ladrão	50	0	5	1
-5	Legolas	5	Arqueiro	75	0	20	1
+COPY public.aventureiros (id, aventureiro, classe, vida_max, vida_atual, mana_max, mana_atual, dano, nivel) FROM stdin;
+1	Frieren	Mago	100	100	100	100	13	1
+2	Fern	Mago	100	100	100	100	13	1
+3	Gandalf	Mago	100	100	100	100	13	1
+4	Bilbo Bolseiro	Ladrão	50	50	0	0	5	1
+5	Legolas	Arqueiro	75	75	0	0	20	1
 \.
 
 
 --
--- TOC entry 3430 (class 0 OID 16424)
--- Dependencies: 219
--- Data for Name: classes; Type: TABLE DATA; Schema: public; Owner: docker
---
-
-COPY public.classes (id, classe) FROM stdin;
-1	Mago
-2	Paladino
-3	Bárbaro
-4	Lanceiro
-5	Arqueiro
-6	Espadachim
-7	Clérigo
-8	Ladrão
-\.
-
-
---
--- TOC entry 3434 (class 0 OID 16457)
--- Dependencies: 223
+-- TOC entry 3425 (class 0 OID 16457)
+-- Dependencies: 222
 -- Data for Name: habilidades; Type: TABLE DATA; Schema: public; Owner: docker
 --
 
 COPY public.habilidades (id, aventureiro_id, habilidade) FROM stdin;
-1	1	Míssil mágico
-2	1	Barreira mágica
-3	1	Voar
-4	1	Ocultação de mana
 5	2	Míssil mágico
 6	2	Barreira mágica
 7	2	Voar
@@ -500,12 +394,16 @@ COPY public.habilidades (id, aventureiro_id, habilidade) FROM stdin;
 11	4	Invisibilidade
 12	4	Barganha
 13	5	Multi-disparo
+1	1	Míssil mágico aprimorado
+2	1	Barreira mágica aprimorada
+3	1	Voar aprimorado
+4	1	Ocultação de mana aprimorada
 \.
 
 
 --
--- TOC entry 3433 (class 0 OID 16442)
--- Dependencies: 222
+-- TOC entry 3424 (class 0 OID 16442)
+-- Dependencies: 221
 -- Data for Name: inventarios; Type: TABLE DATA; Schema: public; Owner: docker
 --
 
@@ -522,7 +420,7 @@ COPY public.inventarios (aventureiro_id, item_id, item, quantidade) FROM stdin;
 
 
 --
--- TOC entry 3427 (class 0 OID 16413)
+-- TOC entry 3419 (class 0 OID 16413)
 -- Dependencies: 216
 -- Data for Name: itens; Type: TABLE DATA; Schema: public; Owner: docker
 --
@@ -537,8 +435,8 @@ COPY public.itens (id, item) FROM stdin;
 
 
 --
--- TOC entry 3441 (class 0 OID 0)
--- Dependencies: 220
+-- TOC entry 3432 (class 0 OID 0)
+-- Dependencies: 219
 -- Name: seq_aventureiros; Type: SEQUENCE SET; Schema: public; Owner: docker
 --
 
@@ -546,7 +444,7 @@ SELECT pg_catalog.setval('public.seq_aventureiros', 5, true);
 
 
 --
--- TOC entry 3442 (class 0 OID 0)
+-- TOC entry 3433 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: seq_classes; Type: SEQUENCE SET; Schema: public; Owner: docker
 --
@@ -555,7 +453,7 @@ SELECT pg_catalog.setval('public.seq_classes', 8, true);
 
 
 --
--- TOC entry 3443 (class 0 OID 0)
+-- TOC entry 3434 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: seq_habilidades; Type: SEQUENCE SET; Schema: public; Owner: docker
 --
@@ -564,7 +462,7 @@ SELECT pg_catalog.setval('public.seq_habilidades', 13, true);
 
 
 --
--- TOC entry 3444 (class 0 OID 0)
+-- TOC entry 3435 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: seq_itens; Type: SEQUENCE SET; Schema: public; Owner: docker
 --
@@ -573,7 +471,7 @@ SELECT pg_catalog.setval('public.seq_itens', 5, true);
 
 
 --
--- TOC entry 3274 (class 2606 OID 16436)
+-- TOC entry 3267 (class 2606 OID 16436)
 -- Name: aventureiros aventureiros_pk; Type: CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -582,16 +480,7 @@ ALTER TABLE ONLY public.aventureiros
 
 
 --
--- TOC entry 3272 (class 2606 OID 16429)
--- Name: classes classes_pk; Type: CONSTRAINT; Schema: public; Owner: docker
---
-
-ALTER TABLE ONLY public.classes
-    ADD CONSTRAINT classes_pk PRIMARY KEY (id);
-
-
---
--- TOC entry 3278 (class 2606 OID 16462)
+-- TOC entry 3271 (class 2606 OID 16462)
 -- Name: habilidades habilidades_pk; Type: CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -600,7 +489,7 @@ ALTER TABLE ONLY public.habilidades
 
 
 --
--- TOC entry 3276 (class 2606 OID 16446)
+-- TOC entry 3269 (class 2606 OID 16446)
 -- Name: inventarios inventarios_pk; Type: CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -609,7 +498,7 @@ ALTER TABLE ONLY public.inventarios
 
 
 --
--- TOC entry 3270 (class 2606 OID 16418)
+-- TOC entry 3265 (class 2606 OID 16418)
 -- Name: itens itens_pk; Type: CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -618,16 +507,7 @@ ALTER TABLE ONLY public.itens
 
 
 --
--- TOC entry 3279 (class 2606 OID 16437)
--- Name: aventureiros aventureiros_classes_fk; Type: FK CONSTRAINT; Schema: public; Owner: docker
---
-
-ALTER TABLE ONLY public.aventureiros
-    ADD CONSTRAINT aventureiros_classes_fk FOREIGN KEY (classe_id) REFERENCES public.classes(id);
-
-
---
--- TOC entry 3282 (class 2606 OID 16463)
+-- TOC entry 3274 (class 2606 OID 16463)
 -- Name: habilidades habilidades_aventureiros_fk; Type: FK CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -636,7 +516,7 @@ ALTER TABLE ONLY public.habilidades
 
 
 --
--- TOC entry 3280 (class 2606 OID 16447)
+-- TOC entry 3272 (class 2606 OID 16447)
 -- Name: inventarios inventarios_aventureiros_fk; Type: FK CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -645,7 +525,7 @@ ALTER TABLE ONLY public.inventarios
 
 
 --
--- TOC entry 3281 (class 2606 OID 16452)
+-- TOC entry 3273 (class 2606 OID 16452)
 -- Name: inventarios inventarios_itens_fk; Type: FK CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -653,7 +533,7 @@ ALTER TABLE ONLY public.inventarios
     ADD CONSTRAINT inventarios_itens_fk FOREIGN KEY (item_id) REFERENCES public.itens(id);
 
 
--- Completed on 2024-04-05 09:10:18 UTC
+-- Completed on 2024-04-06 01:29:11 UTC
 
 --
 -- PostgreSQL database dump complete
@@ -670,7 +550,7 @@ ALTER TABLE ONLY public.inventarios
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-04-05 09:10:18 UTC
+-- Started on 2024-04-06 01:29:11 UTC
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -684,7 +564,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 3440 (class 1262 OID 16468)
+-- TOC entry 3431 (class 1262 OID 16468)
 -- Name: db_2a_forma_normal; Type: DATABASE; Schema: -; Owner: docker
 --
 
@@ -707,7 +587,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 220 (class 1259 OID 16430)
+-- TOC entry 219 (class 1259 OID 16430)
 -- Name: seq_aventureiros; Type: SEQUENCE; Schema: public; Owner: docker
 --
 
@@ -726,50 +606,24 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 221 (class 1259 OID 16431)
+-- TOC entry 220 (class 1259 OID 16431)
 -- Name: aventureiros; Type: TABLE; Schema: public; Owner: docker
 --
 
 CREATE TABLE public.aventureiros (
     id integer DEFAULT nextval('public.seq_aventureiros'::regclass) NOT NULL,
     aventureiro character varying(200) NOT NULL,
-    classe_id integer NOT NULL,
-    vida integer NOT NULL,
-    mana integer NOT NULL,
+    classe character varying(50) NOT NULL,
+    vida_max integer NOT NULL,
+    vida_atual integer NOT NULL,
+    mana_max integer NOT NULL,
+    mana_atual integer NOT NULL,
     dano integer NOT NULL,
     nivel integer NOT NULL
 );
 
 
 ALTER TABLE public.aventureiros OWNER TO docker;
-
---
--- TOC entry 218 (class 1259 OID 16423)
--- Name: seq_classes; Type: SEQUENCE; Schema: public; Owner: docker
---
-
-CREATE SEQUENCE public.seq_classes
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.seq_classes OWNER TO docker;
-
---
--- TOC entry 219 (class 1259 OID 16424)
--- Name: classes; Type: TABLE; Schema: public; Owner: docker
---
-
-CREATE TABLE public.classes (
-    id integer DEFAULT nextval('public.seq_classes'::regclass) NOT NULL,
-    classe character varying(50) NOT NULL
-);
-
-
-ALTER TABLE public.classes OWNER TO docker;
 
 --
 -- TOC entry 217 (class 1259 OID 16419)
@@ -787,7 +641,7 @@ CREATE SEQUENCE public.seq_habilidades
 ALTER SEQUENCE public.seq_habilidades OWNER TO docker;
 
 --
--- TOC entry 223 (class 1259 OID 16457)
+-- TOC entry 222 (class 1259 OID 16457)
 -- Name: habilidades; Type: TABLE; Schema: public; Owner: docker
 --
 
@@ -801,7 +655,7 @@ CREATE TABLE public.habilidades (
 ALTER TABLE public.habilidades OWNER TO docker;
 
 --
--- TOC entry 222 (class 1259 OID 16442)
+-- TOC entry 221 (class 1259 OID 16442)
 -- Name: inventarios; Type: TABLE; Schema: public; Owner: docker
 --
 
@@ -843,49 +697,42 @@ CREATE TABLE public.itens (
 ALTER TABLE public.itens OWNER TO docker;
 
 --
--- TOC entry 3432 (class 0 OID 16431)
--- Dependencies: 221
+-- TOC entry 218 (class 1259 OID 16423)
+-- Name: seq_classes; Type: SEQUENCE; Schema: public; Owner: docker
+--
+
+CREATE SEQUENCE public.seq_classes
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.seq_classes OWNER TO docker;
+
+--
+-- TOC entry 3423 (class 0 OID 16431)
+-- Dependencies: 220
 -- Data for Name: aventureiros; Type: TABLE DATA; Schema: public; Owner: docker
 --
 
-COPY public.aventureiros (id, aventureiro, classe_id, vida, mana, dano, nivel) FROM stdin;
-1	Frieren	1	100	100	13	1
-2	Fern	1	100	100	13	1
-3	Gandalf	1	100	100	13	1
-4	Bilbo Bolseiro	8	50	0	5	1
-5	Legolas	5	75	0	20	1
+COPY public.aventureiros (id, aventureiro, classe, vida_max, vida_atual, mana_max, mana_atual, dano, nivel) FROM stdin;
+1	Frieren	Mago	100	100	100	100	13	1
+2	Fern	Mago	100	100	100	100	13	1
+3	Gandalf	Mago	100	100	100	100	13	1
+4	Bilbo Bolseiro	Ladrão	50	50	0	0	5	1
+5	Legolas	Arqueiro	75	75	0	0	20	1
 \.
 
 
 --
--- TOC entry 3430 (class 0 OID 16424)
--- Dependencies: 219
--- Data for Name: classes; Type: TABLE DATA; Schema: public; Owner: docker
---
-
-COPY public.classes (id, classe) FROM stdin;
-1	Mago
-2	Paladino
-3	Bárbaro
-4	Lanceiro
-5	Arqueiro
-6	Espadachim
-7	Clérigo
-8	Ladrão
-\.
-
-
---
--- TOC entry 3434 (class 0 OID 16457)
--- Dependencies: 223
+-- TOC entry 3425 (class 0 OID 16457)
+-- Dependencies: 222
 -- Data for Name: habilidades; Type: TABLE DATA; Schema: public; Owner: docker
 --
 
 COPY public.habilidades (id, aventureiro_id, habilidade) FROM stdin;
-1	1	Míssil mágico
-2	1	Barreira mágica
-3	1	Voar
-4	1	Ocultação de mana
 5	2	Míssil mágico
 6	2	Barreira mágica
 7	2	Voar
@@ -895,12 +742,16 @@ COPY public.habilidades (id, aventureiro_id, habilidade) FROM stdin;
 11	4	Invisibilidade
 12	4	Barganha
 13	5	Multi-disparo
+1	1	Míssil mágico aprimorado
+2	1	Barreira mágica aprimorada
+3	1	Voar aprimorado
+4	1	Ocultação de mana aprimorada
 \.
 
 
 --
--- TOC entry 3433 (class 0 OID 16442)
--- Dependencies: 222
+-- TOC entry 3424 (class 0 OID 16442)
+-- Dependencies: 221
 -- Data for Name: inventarios; Type: TABLE DATA; Schema: public; Owner: docker
 --
 
@@ -917,7 +768,7 @@ COPY public.inventarios (aventureiro_id, item_id, quantidade) FROM stdin;
 
 
 --
--- TOC entry 3427 (class 0 OID 16413)
+-- TOC entry 3419 (class 0 OID 16413)
 -- Dependencies: 216
 -- Data for Name: itens; Type: TABLE DATA; Schema: public; Owner: docker
 --
@@ -932,8 +783,8 @@ COPY public.itens (id, item) FROM stdin;
 
 
 --
--- TOC entry 3441 (class 0 OID 0)
--- Dependencies: 220
+-- TOC entry 3432 (class 0 OID 0)
+-- Dependencies: 219
 -- Name: seq_aventureiros; Type: SEQUENCE SET; Schema: public; Owner: docker
 --
 
@@ -941,7 +792,7 @@ SELECT pg_catalog.setval('public.seq_aventureiros', 5, true);
 
 
 --
--- TOC entry 3442 (class 0 OID 0)
+-- TOC entry 3433 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: seq_classes; Type: SEQUENCE SET; Schema: public; Owner: docker
 --
@@ -950,7 +801,7 @@ SELECT pg_catalog.setval('public.seq_classes', 8, true);
 
 
 --
--- TOC entry 3443 (class 0 OID 0)
+-- TOC entry 3434 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: seq_habilidades; Type: SEQUENCE SET; Schema: public; Owner: docker
 --
@@ -959,7 +810,7 @@ SELECT pg_catalog.setval('public.seq_habilidades', 13, true);
 
 
 --
--- TOC entry 3444 (class 0 OID 0)
+-- TOC entry 3435 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: seq_itens; Type: SEQUENCE SET; Schema: public; Owner: docker
 --
@@ -968,7 +819,7 @@ SELECT pg_catalog.setval('public.seq_itens', 5, true);
 
 
 --
--- TOC entry 3274 (class 2606 OID 16436)
+-- TOC entry 3267 (class 2606 OID 16436)
 -- Name: aventureiros aventureiros_pk; Type: CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -977,16 +828,7 @@ ALTER TABLE ONLY public.aventureiros
 
 
 --
--- TOC entry 3272 (class 2606 OID 16429)
--- Name: classes classes_pk; Type: CONSTRAINT; Schema: public; Owner: docker
---
-
-ALTER TABLE ONLY public.classes
-    ADD CONSTRAINT classes_pk PRIMARY KEY (id);
-
-
---
--- TOC entry 3278 (class 2606 OID 16462)
+-- TOC entry 3271 (class 2606 OID 16462)
 -- Name: habilidades habilidades_pk; Type: CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -995,7 +837,7 @@ ALTER TABLE ONLY public.habilidades
 
 
 --
--- TOC entry 3276 (class 2606 OID 16446)
+-- TOC entry 3269 (class 2606 OID 16446)
 -- Name: inventarios inventarios_pk; Type: CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -1004,7 +846,7 @@ ALTER TABLE ONLY public.inventarios
 
 
 --
--- TOC entry 3270 (class 2606 OID 16418)
+-- TOC entry 3265 (class 2606 OID 16418)
 -- Name: itens itens_pk; Type: CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -1013,16 +855,7 @@ ALTER TABLE ONLY public.itens
 
 
 --
--- TOC entry 3279 (class 2606 OID 16437)
--- Name: aventureiros aventureiros_classes_fk; Type: FK CONSTRAINT; Schema: public; Owner: docker
---
-
-ALTER TABLE ONLY public.aventureiros
-    ADD CONSTRAINT aventureiros_classes_fk FOREIGN KEY (classe_id) REFERENCES public.classes(id);
-
-
---
--- TOC entry 3282 (class 2606 OID 16463)
+-- TOC entry 3274 (class 2606 OID 16463)
 -- Name: habilidades habilidades_aventureiros_fk; Type: FK CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -1031,7 +864,7 @@ ALTER TABLE ONLY public.habilidades
 
 
 --
--- TOC entry 3280 (class 2606 OID 16447)
+-- TOC entry 3272 (class 2606 OID 16447)
 -- Name: inventarios inventarios_aventureiros_fk; Type: FK CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -1040,7 +873,7 @@ ALTER TABLE ONLY public.inventarios
 
 
 --
--- TOC entry 3281 (class 2606 OID 16452)
+-- TOC entry 3273 (class 2606 OID 16452)
 -- Name: inventarios inventarios_itens_fk; Type: FK CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -1048,7 +881,7 @@ ALTER TABLE ONLY public.inventarios
     ADD CONSTRAINT inventarios_itens_fk FOREIGN KEY (item_id) REFERENCES public.itens(id);
 
 
--- Completed on 2024-04-05 09:10:18 UTC
+-- Completed on 2024-04-06 01:29:11 UTC
 
 --
 -- PostgreSQL database dump complete
@@ -1065,7 +898,7 @@ ALTER TABLE ONLY public.inventarios
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-04-05 09:10:18 UTC
+-- Started on 2024-04-06 01:29:11 UTC
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1079,7 +912,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 3448 (class 1262 OID 16469)
+-- TOC entry 3449 (class 1262 OID 16469)
 -- Name: db_3a_forma_normal; Type: DATABASE; Schema: -; Owner: docker
 --
 
@@ -1129,6 +962,8 @@ CREATE TABLE public.aventureiros (
     id integer DEFAULT nextval('public.seq_aventureiros'::regclass) NOT NULL,
     aventureiro character varying(200) NOT NULL,
     classe_id integer NOT NULL,
+    vida_atual integer NOT NULL,
+    mana_atual integer NOT NULL,
     nivel integer NOT NULL
 );
 
@@ -1243,30 +1078,30 @@ CREATE TABLE public.niveis (
     nivel integer NOT NULL,
     classe_id integer NOT NULL,
     dano integer NOT NULL,
-    vida integer,
-    mana integer
+    vida_max integer NOT NULL,
+    mana_max integer NOT NULL
 );
 
 
 ALTER TABLE public.niveis OWNER TO docker;
 
 --
--- TOC entry 3439 (class 0 OID 16431)
+-- TOC entry 3440 (class 0 OID 16431)
 -- Dependencies: 221
 -- Data for Name: aventureiros; Type: TABLE DATA; Schema: public; Owner: docker
 --
 
-COPY public.aventureiros (id, aventureiro, classe_id, nivel) FROM stdin;
-1	Frieren	1	1
-2	Fern	1	1
-3	Gandalf	1	1
-4	Bilbo Bolseiro	8	1
-5	Legolas	5	1
+COPY public.aventureiros (id, aventureiro, classe_id, vida_atual, mana_atual, nivel) FROM stdin;
+1	Frieren	1	100	100	1
+2	Fern	1	100	100	1
+3	Gandalf	1	100	100	1
+4	Bilbo Bolseiro	8	50	0	1
+5	Legolas	5	75	0	1
 \.
 
 
 --
--- TOC entry 3437 (class 0 OID 16424)
+-- TOC entry 3438 (class 0 OID 16424)
 -- Dependencies: 219
 -- Data for Name: classes; Type: TABLE DATA; Schema: public; Owner: docker
 --
@@ -1284,16 +1119,12 @@ COPY public.classes (id, classe) FROM stdin;
 
 
 --
--- TOC entry 3441 (class 0 OID 16457)
+-- TOC entry 3442 (class 0 OID 16457)
 -- Dependencies: 223
 -- Data for Name: habilidades; Type: TABLE DATA; Schema: public; Owner: docker
 --
 
 COPY public.habilidades (id, aventureiro_id, habilidade) FROM stdin;
-1	1	Míssil mágico
-2	1	Barreira mágica
-3	1	Voar
-4	1	Ocultação de mana
 5	2	Míssil mágico
 6	2	Barreira mágica
 7	2	Voar
@@ -1303,11 +1134,15 @@ COPY public.habilidades (id, aventureiro_id, habilidade) FROM stdin;
 11	4	Invisibilidade
 12	4	Barganha
 13	5	Multi-disparo
+1	1	Míssil mágico aprimorado
+2	1	Barreira mágica aprimorada
+3	1	Voar aprimorado
+4	1	Ocultação de mana aprimorada
 \.
 
 
 --
--- TOC entry 3440 (class 0 OID 16442)
+-- TOC entry 3441 (class 0 OID 16442)
 -- Dependencies: 222
 -- Data for Name: inventarios; Type: TABLE DATA; Schema: public; Owner: docker
 --
@@ -1325,7 +1160,7 @@ COPY public.inventarios (aventureiro_id, item_id, quantidade) FROM stdin;
 
 
 --
--- TOC entry 3434 (class 0 OID 16413)
+-- TOC entry 3435 (class 0 OID 16413)
 -- Dependencies: 216
 -- Data for Name: itens; Type: TABLE DATA; Schema: public; Owner: docker
 --
@@ -1340,12 +1175,12 @@ COPY public.itens (id, item) FROM stdin;
 
 
 --
--- TOC entry 3442 (class 0 OID 16470)
+-- TOC entry 3443 (class 0 OID 16470)
 -- Dependencies: 224
 -- Data for Name: niveis; Type: TABLE DATA; Schema: public; Owner: docker
 --
 
-COPY public.niveis (nivel, classe_id, dano, vida, mana) FROM stdin;
+COPY public.niveis (nivel, classe_id, dano, vida_max, mana_max) FROM stdin;
 1	1	13	100	100
 2	1	17	105	150
 3	1	22	110	200
@@ -1374,7 +1209,7 @@ COPY public.niveis (nivel, classe_id, dano, vida, mana) FROM stdin;
 
 
 --
--- TOC entry 3449 (class 0 OID 0)
+-- TOC entry 3450 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: seq_aventureiros; Type: SEQUENCE SET; Schema: public; Owner: docker
 --
@@ -1383,7 +1218,7 @@ SELECT pg_catalog.setval('public.seq_aventureiros', 5, true);
 
 
 --
--- TOC entry 3450 (class 0 OID 0)
+-- TOC entry 3451 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: seq_classes; Type: SEQUENCE SET; Schema: public; Owner: docker
 --
@@ -1392,7 +1227,7 @@ SELECT pg_catalog.setval('public.seq_classes', 8, true);
 
 
 --
--- TOC entry 3451 (class 0 OID 0)
+-- TOC entry 3452 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: seq_habilidades; Type: SEQUENCE SET; Schema: public; Owner: docker
 --
@@ -1401,7 +1236,7 @@ SELECT pg_catalog.setval('public.seq_habilidades', 13, true);
 
 
 --
--- TOC entry 3452 (class 0 OID 0)
+-- TOC entry 3453 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: seq_itens; Type: SEQUENCE SET; Schema: public; Owner: docker
 --
@@ -1464,7 +1299,7 @@ ALTER TABLE ONLY public.niveis
 
 
 --
--- TOC entry 3285 (class 2606 OID 16437)
+-- TOC entry 3285 (class 2606 OID 16486)
 -- Name: aventureiros aventureiros_classes_fk; Type: FK CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -1473,7 +1308,16 @@ ALTER TABLE ONLY public.aventureiros
 
 
 --
--- TOC entry 3288 (class 2606 OID 16463)
+-- TOC entry 3286 (class 2606 OID 16491)
+-- Name: aventureiros aventureiros_niveis_fk; Type: FK CONSTRAINT; Schema: public; Owner: docker
+--
+
+ALTER TABLE ONLY public.aventureiros
+    ADD CONSTRAINT aventureiros_niveis_fk FOREIGN KEY (nivel, classe_id) REFERENCES public.niveis(nivel, classe_id);
+
+
+--
+-- TOC entry 3289 (class 2606 OID 16463)
 -- Name: habilidades habilidades_aventureiros_fk; Type: FK CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -1482,7 +1326,7 @@ ALTER TABLE ONLY public.habilidades
 
 
 --
--- TOC entry 3286 (class 2606 OID 16447)
+-- TOC entry 3287 (class 2606 OID 16447)
 -- Name: inventarios inventarios_aventureiros_fk; Type: FK CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -1491,7 +1335,7 @@ ALTER TABLE ONLY public.inventarios
 
 
 --
--- TOC entry 3287 (class 2606 OID 16452)
+-- TOC entry 3288 (class 2606 OID 16452)
 -- Name: inventarios inventarios_itens_fk; Type: FK CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -1500,7 +1344,7 @@ ALTER TABLE ONLY public.inventarios
 
 
 --
--- TOC entry 3289 (class 2606 OID 16477)
+-- TOC entry 3290 (class 2606 OID 16477)
 -- Name: niveis niveis_classes_fk; Type: FK CONSTRAINT; Schema: public; Owner: docker
 --
 
@@ -1508,13 +1352,13 @@ ALTER TABLE ONLY public.niveis
     ADD CONSTRAINT niveis_classes_fk FOREIGN KEY (classe_id) REFERENCES public.classes(id);
 
 
--- Completed on 2024-04-05 09:10:18 UTC
+-- Completed on 2024-04-06 01:29:12 UTC
 
 --
 -- PostgreSQL database dump complete
 --
 
--- Completed on 2024-04-05 09:10:18 UTC
+-- Completed on 2024-04-06 01:29:12 UTC
 
 --
 -- PostgreSQL database cluster dump complete
